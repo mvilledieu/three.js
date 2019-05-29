@@ -18,7 +18,7 @@ To add the non minified version:
 
 #### /!\ Only tested on Helio (Lumin OS **0.96.0**) /!\
 
-**Try the three.js WebXR samples**
+**Try the three.js WebXR samples on device**
 - [Working WebXR examples](https://mvilledieu.github.io/three.js/examples/?q=webvr)
 
 **Start building using the hello world**
