@@ -1,9 +1,9 @@
 {
   "name": "ml-three",
-  "version": "0.105.1",
+  "version": "0.105.2",
   "description": "Experimental fork used for matching three.js WebXR API calls to current Helio's version of the API",
   "main": "build/three.js",
-  "repository": "mvilledieu/ml-three.js",
+  "repository": "mvilledieu/three.js",
   "jsnext:main": "build/three.module.js",
   "module": "build/three.module.js",
   "types": "src/Three.d.ts",
@@ -63,9 +63,9 @@
   "author": "mvilledieu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mvilledieu/ml-three.js/issues"
+    "url": "https://github.com/mvilledieu/three.js/issues"
   },
-  "homepage": "https://mvilledieu.github.io/ml-three.js/examples/?q=webvr",
+  "homepage": "https://mvilledieu.github.io/three.js/examples/?q=webvr",
   "devDependencies": {
     "concurrently": "^4.1.0",
     "eslint": "^5.16.0",
