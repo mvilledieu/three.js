@@ -1,6 +1,6 @@
 {
   "name": "ml-three",
-  "version": "0.104.2",
+  "version": "0.105.1",
   "description": "Experimental fork used for matching three.js WebXR API calls to current Helio's version of the API",
   "main": "build/three.js",
   "repository": "mvilledieu/ml-three.js",
