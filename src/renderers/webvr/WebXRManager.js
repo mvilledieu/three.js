@@ -133,7 +133,7 @@ export function WebXRManager( renderer ) {
 			session.baseLayer = new XRWebGLLayer( session, gl, { framebufferScaleFactor: framebufferScaleFactor } );
 			// session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
 
-			session.requestReferenceSpace( { type: 'stationary', subtype: 'eye-level' } ).then( onRequestReferenceSpace );
+			session.requestReferenceSpace( { type: 'stationary', subtype: 'floor-level' } ).then( onRequestReferenceSpace );
 			// session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
 			//
