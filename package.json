@@ -3,7 +3,7 @@
   "version": "0.105.2",
   "description": "Experimental fork used for matching three.js WebXR API calls to current Helio's version of the API",
   "main": "build/three.js",
-  "repository": "mvilledieu/three.js",
+  "repository": "https://github.com/mvilledieu/three.js/tree/magicleap-webxr-support",
   "jsnext:main": "build/three.module.js",
   "module": "build/three.module.js",
   "types": "src/Three.d.ts",
