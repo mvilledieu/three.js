@@ -81,7 +81,8 @@ var WEBVR = {
 
 				if ( currentSession === null ) {
 
-					device.requestSession( { immersive: true, exclusive: true /* DEPRECATED */ } ).then( onSessionStarted );
+					navigator.xr.requestSession( { mode: 'immersive-ar' } ).then( onSessionStarted );
+					// navigator.xr.requestSession( 'immersive-vr' ).then( onSessionStarted );
 
 				} else {
 
@@ -90,8 +91,6 @@ var WEBVR = {
 				}
 
 			};
-
-			renderer.vr.setDevice( device );
 
 		}
 
@@ -131,20 +130,15 @@ var WEBVR = {
 
 		}
 
-		if ( 'xr' in navigator ) {
+		if ( 'xr' in navigator && 'supportsSessionMode' in navigator.xr ) {
 
 			var button = document.createElement( 'button' );
 			button.style.display = 'none';
 
 			stylizeElement( button );
 
-			navigator.xr.requestDevice().then( function ( device ) {
-
-				device.supportsSession( { immersive: true, exclusive: true /* DEPRECATED */ } )
-					.then( function () { showEnterXR( device ); } )
-					.catch( showVRNotFound );
-
-			} ).catch( showVRNotFound );
+			navigator.xr.supportsSessionMode( 'immersive-ar' ).then( function() { showEnterXR() } );
+			// navigator.xr.supportsSession( 'immersive-vr' ).then( showEnterXR );
 
 			return button;
 
