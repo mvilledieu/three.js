@@ -10,7 +10,7 @@ import { PerspectiveCamera } from '../../cameras/PerspectiveCamera.js';
 import { WebGLAnimation } from '../webgl/WebGLAnimation.js';
 import { setProjectionFromUnion } from './WebVRUtils.js';
 
-function WebXRManager( renderer ) {
+export function WebXRManager( renderer ) {
 
 	var gl = renderer.context;
 
@@ -113,6 +113,12 @@ function WebXRManager( renderer ) {
 
 	};
 
+	this.getSession = function () {
+
+		return session;
+
+	};
+
 	this.setSession = function ( value ) {
 
 		session = value;
@@ -124,18 +130,19 @@ function WebXRManager( renderer ) {
 			session.addEventListener( 'selectend', onSessionEvent );
 			session.addEventListener( 'end', onSessionEnd );
 
-			session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
+			session.baseLayer = new XRWebGLLayer( session, gl, { framebufferScaleFactor: framebufferScaleFactor } );
+			// session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
 
-			session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
+			session.requestReferenceSpace( { type: 'stationary', subtype: 'eye-level' } ).then( onRequestReferenceSpace );
+			// session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
 			//
 
-			inputSources = session.inputSources;
+			inputSources = session.getInputSources();
 
 			session.addEventListener( 'inputsourceschange', function () {
 
-				inputSources = session.inputSources;
-				console.log( inputSources );
+				inputSources = session.getInputSources();
 
 				for ( var i = 0; i < controllers.length; i ++ ) {
 
@@ -211,20 +218,25 @@ function WebXRManager( renderer ) {
 
 	function onAnimationFrame( time, frame ) {
 
+		var session = frame.session;
+
 		pose = frame.getViewerPose( referenceSpace );
 
 		if ( pose !== null ) {
 
-			var layer = session.renderState.baseLayer;
+			var layer = session.baseLayer;
+			// var layer = session.renderState.baseLayer;
 			var views = pose.views;
 
-			renderer.setFramebuffer( session.renderState.baseLayer.framebuffer );
+			renderer.setFramebuffer( session.baseLayer.framebuffer );
+			// renderer.setFramebuffer( session.renderState.baseLayer.framebuffer );
 
 			for ( var i = 0; i < views.length; i ++ ) {
 
 				var view = views[ i ];
 				var viewport = layer.getViewport( view );
-				var viewMatrix = view.transform.inverse.matrix;
+				var viewMatrix = view.viewMatrix;
+				// var viewMatrix = view.transform.inverse.matrix;
 
 				var camera = cameraVR.cameras[ i ];
 				camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
@@ -251,11 +263,29 @@ function WebXRManager( renderer ) {
 
 			if ( inputSource ) {
 
-				var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
+				var inputPose = frame.getInputPose( inputSource, referenceSpace );
+				// var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
 
 				if ( inputPose !== null ) {
 
-					controller.matrix.fromArray( inputPose.transform.matrix );
+					if ( 'targetRay' in inputPose ) {
+
+						controller.matrix.elements = inputPose.targetRay.transformMatrix;
+
+					} else if ( 'pointerMatrix' in inputPose ) {
+
+						// DEPRECATED
+
+						controller.matrix.elements = inputPose.pointerMatrix;
+
+					}
+
+// 				var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
+
+// 				if ( inputPose !== null ) {
+
+// 					controller.matrix.fromArray( inputPose.transform.matrix );
+
 					controller.matrix.decompose( controller.position, controller.rotation, controller.scale );
 					controller.visible = true;
 
@@ -308,5 +338,3 @@ function WebXRManager( renderer ) {
 	this.submitFrame = function () {};
 
 }
-
-export { WebXRManager };

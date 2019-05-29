@@ -22408,8 +22408,9 @@
 
 		var session = null;
 
+		var framebufferScaleFactor = 1.0;
+
 		var referenceSpace = null;
-		var referenceSpaceType = 'local-floor';
 
 		var pose = null;
 
@@ -22493,11 +22494,17 @@
 
 		this.setFramebufferScaleFactor = function ( value ) {
 
+			framebufferScaleFactor = value;
+
 		};
 
 		this.setReferenceSpaceType = function ( value ) {
 
-			referenceSpaceType = value;
+		};
+
+		this.getSession = function () {
+
+			return session;
 
 		};
 
@@ -22512,18 +22519,19 @@
 				session.addEventListener( 'selectend', onSessionEvent );
 				session.addEventListener( 'end', onSessionEnd );
 
-				session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
+				session.baseLayer = new XRWebGLLayer( session, gl, { framebufferScaleFactor: framebufferScaleFactor } );
+				// session.updateRenderState( { baseLayer: new XRWebGLLayer( session, gl ) } );
 
-				session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
+				session.requestReferenceSpace( { type: 'stationary', subtype: 'eye-level' } ).then( onRequestReferenceSpace );
+				// session.requestReferenceSpace( referenceSpaceType ).then( onRequestReferenceSpace );
 
 				//
 
-				inputSources = session.inputSources;
+				inputSources = session.getInputSources();
 
 				session.addEventListener( 'inputsourceschange', function () {
 
-					inputSources = session.inputSources;
-					console.log( inputSources );
+					inputSources = session.getInputSources();
 
 					for ( var i = 0; i < controllers.length; i ++ ) {
 
@@ -22599,20 +22607,25 @@
 
 		function onAnimationFrame( time, frame ) {
 
+			var session = frame.session;
+
 			pose = frame.getViewerPose( referenceSpace );
 
 			if ( pose !== null ) {
 
-				var layer = session.renderState.baseLayer;
+				var layer = session.baseLayer;
+				// var layer = session.renderState.baseLayer;
 				var views = pose.views;
 
-				renderer.setFramebuffer( session.renderState.baseLayer.framebuffer );
+				renderer.setFramebuffer( session.baseLayer.framebuffer );
+				// renderer.setFramebuffer( session.renderState.baseLayer.framebuffer );
 
 				for ( var i = 0; i < views.length; i ++ ) {
 
 					var view = views[ i ];
 					var viewport = layer.getViewport( view );
-					var viewMatrix = view.transform.inverse.matrix;
+					var viewMatrix = view.viewMatrix;
+					// var viewMatrix = view.transform.inverse.matrix;
 
 					var camera = cameraVR.cameras[ i ];
 					camera.matrix.fromArray( viewMatrix ).getInverse( camera.matrix );
@@ -22639,11 +22652,29 @@
 
 				if ( inputSource ) {
 
-					var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
+					var inputPose = frame.getInputPose( inputSource, referenceSpace );
+					// var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
 
 					if ( inputPose !== null ) {
 
-						controller.matrix.fromArray( inputPose.transform.matrix );
+						if ( 'targetRay' in inputPose ) {
+
+							controller.matrix.elements = inputPose.targetRay.transformMatrix;
+
+						} else if ( 'pointerMatrix' in inputPose ) {
+
+							// DEPRECATED
+
+							controller.matrix.elements = inputPose.pointerMatrix;
+
+						}
+
+	// 				var inputPose = frame.getPose( inputSource.targetRaySpace, referenceSpace );
+
+	// 				if ( inputPose !== null ) {
+
+	// 					controller.matrix.fromArray( inputPose.transform.matrix );
+
 						controller.matrix.decompose( controller.position, controller.rotation, controller.scale );
 						controller.visible = true;
 
@@ -22966,7 +22997,8 @@
 
 		// vr
 
-		var vr = ( typeof navigator !== 'undefined' && 'xr' in navigator && 'supportsSession' in navigator.xr ) ? new WebXRManager( _this ) : new WebVRManager( _this );
+		var vr = ( typeof navigator !== 'undefined' && 'xr' in navigator && 'supportsSessionMode' in navigator.xr ) ? new WebXRManager( _this ) : new WebVRManager( _this );
+		// var vr = ( typeof navigator !== 'undefined' && 'xr' in navigator && 'supportsSession' in navigator.xr ) ? new WebXRManager( _this ) : new WebVRManager( _this );
 
 		this.vr = vr;
 

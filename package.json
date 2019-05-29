@@ -1,9 +1,9 @@
 {
-  "name": "three",
-  "version": "0.104.0",
-  "description": "JavaScript 3D library",
+  "name": "ml-three",
+  "version": "0.104.2",
+  "description": "Experimental fork used for matching three.js WebXR API calls to current Helio's version of the API",
   "main": "build/three.js",
-  "repository": "mrdoob/three.js",
+  "repository": "mvilledieu/ml-three.js",
   "jsnext:main": "build/three.module.js",
   "module": "build/three.module.js",
   "types": "src/Three.d.ts",
@@ -47,7 +47,7 @@
     "build-test": "rollup -c test/rollup.unit.config.js",
     "build-closure": "rollup -c && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs utils/build/externs.js --language_in=ECMASCRIPT5_STRICT --js build/three.js --js_output_file build/three.min.js",
     "build-examples": "rollup -c rollup-examples.config.js",
-    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -c -w -m inline\" \"http-server -c-1 -p 8080\"",
+    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -c -w -m inline\" \"http-server -S -C cert.pem -o -c-1 -p 8080\"",
     "dev-test": "concurrently --names \"ROLLUP,ROLLUPTEST,HTTP\" -c \"bgBlue.bold,bgRed.bold,bgGreen.bold\" \"rollup -c -w -m inline\" \"rollup -c test/rollup.unit.config.js -w -m inline\" \"http-server -p 8080\"",
     "start": "npm run dev",
     "lint": "eslint src --ext js --ext ts",
@@ -60,12 +60,12 @@
     "3d",
     "webgl"
   ],
-  "author": "mrdoob",
+  "author": "mvilledieu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mrdoob/three.js/issues"
+    "url": "https://github.com/mvilledieu/ml-three.js/issues"
   },
-  "homepage": "https://threejs.org/",
+  "homepage": "https://mvilledieu.github.io/ml-three.js/examples/?q=webvr",
   "devDependencies": {
     "concurrently": "^4.1.0",
     "eslint": "^5.16.0",
