@@ -7,13 +7,13 @@ Custom version of [three.js](https://threejs.org/) used to test and update the W
 If you use npm, run  `npm i ml-three`. Otherwise, to add the minified version:
 
 ```
-<script src="https://unpkg.com/ml-three/build/three.min.js"></script>
+<script src="https://unpkg.com/ml-three@latest/build/three.min.js"></script>
 ```
 
 To add the non minified version:
 
 ```
-<script src="https://unpkg.com/ml-three/build/three.js"></script>
+<script src="https://unpkg.com/ml-three@latest/build/three.js"></script>
 ```
 
 #### /!\ Only tested on Helio (Lumin OS **0.96.0**) /!\
